@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JobListing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Application;
 
 class JobListingController extends Controller
 {
@@ -16,35 +17,33 @@ class JobListingController extends Controller
 
     // Store: Create a new job listing
     public function store(Request $request)
-{
-    try {
-        Log::info('Creating job listing with data:', $request->all()); // Log incoming data
+    {
+        try {
+            Log::info('Creating job listing with data:', $request->all()); // Log incoming data
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'company' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'salary_min' => 'required|integer',
-            'salary_max' => 'required|integer',
-            'job_type' => 'required|string',
-            'requirements' => 'required|array',
-            'skills' => 'required|array',
-            'application_deadline' => 'required|date'
-        ]);
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'company' => 'required|string|max:255',
+                'location' => 'required|string|max:255',
+                'salary_min' => 'required|integer',
+                'salary_max' => 'required|integer',
+                'job_type' => 'required|string',
+                'requirements' => 'required|array',
+                'skills' => 'required|array',
+                'application_deadline' => 'required|date'
+            ]);
 
-        $job = JobListing::create($validated);
+            $job = JobListing::create($validated);
 
-        Log::info('Job created successfully:', $job->toArray()); // Log successful job creation
+            Log::info('Job created successfully:', $job->toArray()); // Log successful job creation
 
-        return response()->json($job, 201);
-    } catch (\Exception $e) {
-        Log::error('Error creating job listing:', ['error' => $e->getMessage()]);
-        return response()->json(['message' => 'Failed to create job'], 500);
+            return response()->json($job, 201);
+        } catch (\Exception $e) {
+            Log::error('Error creating job listing:', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Failed to create job'], 500);
+        }
     }
-}
-
-
 
     // Show: Get a specific job listing by ID
     public function show($id)

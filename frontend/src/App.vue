@@ -52,7 +52,35 @@
         ref="jobList"
         @edit-job="editJob" 
         @create-job="createJob" 
+        @manage-applications="showManageApplications"  
       />
+
+      <!-- Manage Applications Modal -->
+      <TransitionRoot appear :show="showManage" as="template">
+        <Dialog as="div" @close="showManage = false" class="relative z-10">
+          <div class="fixed inset-0 bg-black bg-opacity-25" />
+          <div class="fixed inset-0 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4">
+              <TransitionChild
+                enter="ease-out duration-300"
+                enter-from="opacity-0 scale-95"
+                enter-to="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leave-from="opacity-100 scale-100"
+                leave-to="opacity-0 scale-95"
+              >
+                <DialogPanel class="w-full max-w-2xl transform bg-white p-6 rounded-xl shadow-xl transition-all">
+                  <ManageApplications
+                    :job="selectedJob"
+                    @close="showManage = false"
+                  />
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </Dialog>
+      </TransitionRoot>
+
       <Toaster position="top-right" />
     </main>
   </div>
@@ -65,9 +93,11 @@ import { PlusIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
 import JobList from './components/JobList.vue';
 import JobForm from './components/JobForm.vue';
+import ManageApplications from './components/ManageApplications.vue';
 
 const showForm = ref(false);  // Modal control state
-const selectedJob = ref(null);  // Data job yang dipilih untuk diedit
+const showManage = ref(false);  // State to show Manage Applications modal
+const selectedJob = ref(null);  // Data job yang dipilih untuk dikelola aplikasinya
 const isEdit = ref(false);  // Untuk membedakan mode edit dan create
 
 // Fungsi untuk membuka form dalam mode edit
@@ -88,5 +118,11 @@ const createJob = () => {
 const handleFormSubmitted = () => {
   showForm.value = false;  // Menutup modal setelah form disubmit
   // Melakukan PUT atau POST request ke server untuk update atau create job
+};
+
+// Fungsi untuk menangani event manage-applications dari JobList
+const showManageApplications = (job) => {
+  selectedJob.value = job;  // Set job yang dipilih untuk pengelolaan aplikasi
+  showManage.value = true;   // Tampilkan modal Manage Applications
 };
 </script>

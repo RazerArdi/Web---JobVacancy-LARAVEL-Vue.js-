@@ -1,15 +1,16 @@
+<!-- JobList.vue -->
 <template>
   <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
     <div v-for="job in jobs" :key="job.id" class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900">{{ job.title }}</h3>
-          <span class="px-3 py-1 text-sm font-medium rounded-full" 
-            :class="getJobTypeClass(job.job_type)">
+          <span class="px-3 py-1 text-sm font-medium rounded-full" :class="getJobTypeClass(job.job_type)">
             {{ job.job_type }}
           </span>
         </div>
-        
+
+        <!-- Details -->
         <div class="space-y-2 mb-4">
           <div class="flex items-center text-gray-600">
             <BuildingOfficeIcon class="h-5 w-5 mr-2" />
@@ -41,6 +42,12 @@
           >
             <TrashIcon class="h-4 w-4 mr-2" />
             Delete
+          </button>
+          <button
+            @click="manageApplications(job)"
+            class="inline-flex items-center px-3 py-2 border border-indigo-300 text-sm font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50"
+          >
+            Manage Applications
           </button>
         </div>
       </div>
@@ -107,5 +114,10 @@ onMounted(fetchJobs);
 // Function to trigger edit job event
 const editJob = (job) => {
   emit('edit-job', job);
+};
+
+// Function to manage applications for a job
+const manageApplications = (job) => {
+  emit('manage-applications', job);  // Emit event to manage applications
 };
 </script>
