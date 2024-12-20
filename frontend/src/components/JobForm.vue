@@ -170,44 +170,48 @@ const props = defineProps({
 const emit = defineEmits(['form-submitted', 'close']);
 const jobData = ref({ ...props.initialJob });
 
-const submitForm = async () => {
-  // Konversi requirements dan skills ke array jika perlu
-  jobData.value.requirements = jobData.value.requirements
-    .split(/[\n,]/) // Pisah berdasarkan baris baru atau koma
-    .map((item) => item.trim())
-    .filter((item) => item !== ""); // Hapus elemen kosong
+      const submitForm = async () => {
+          if (typeof jobData.value.requirements === 'string') {
+              jobData.value.requirements = jobData.value.requirements
+                  .split(/[\n,]/) // Split by newline or comma
+                  .map((item) => item.trim())
+                  .filter((item) => item !== ""); // Remove empty elements
+          }
 
-  jobData.value.skills = jobData.value.skills
-    .split(/[\n,]/) // Pisah berdasarkan baris baru atau koma
-    .map((item) => item.trim())
-    .filter((item) => item !== "");
+          if (typeof jobData.value.skills === 'string') {
+              jobData.value.skills = jobData.value.skills
+                  .split(/[\n,]/) // Split by newline or comma
+                  .map((item) => item.trim())
+                  .filter((item) => item !== "");
+          }
 
-  const url = props.isEdit
-    ? `http://localhost:8000/api/job-listings/${jobData.value.id}`
-    : 'http://localhost:8000/api/job-listings';
-  const method = props.isEdit ? 'PUT' : 'POST';
+          const url = props.isEdit
+              ? `http://localhost:8000/api/job-listings/${jobData.value.id}`
+              : 'http://localhost:8000/api/job-listings';
+          const method = props.isEdit ? 'PUT' : 'POST';
 
-  try {
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(jobData.value),
-    });
+          try {
+              const response = await fetch(url, {
+                  method,
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(jobData.value),
+              });
 
-    const data = await response.json();
+              const data = await response.json();
 
-    if (data && data.id) {
-      toast.success(props.isEdit ? 'Job updated successfully!' : 'Job created successfully!');
-      emit('form-submitted');
-    } else {
-      toast.error('Failed to submit job: ' + (data.message || 'Unknown error'));
-    }
-  } catch (error) {
-    toast.error('There was an error submitting the job.');
-  }
-};
+              if (data && data.id) {
+                  toast.success(props.isEdit ? 'Job updated successfully!' : 'Job created successfully!');
+                  emit('form-submitted');
+              } else {
+                  toast.error('Failed to submit job: ' + (data.message || 'Unknown error'));
+              }
+          } catch (error) {
+              toast.error('There was an error submitting the job.');
+          }
+      };
+
 </script>
 
 

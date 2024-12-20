@@ -122,7 +122,7 @@
         await fetch(`http://localhost:8000/api/job-listings/${props.job.id}/applications/${applicationId}`, {
           method: 'DELETE'
         });
-        await fetchApplications(); // Refresh applications
+        await fetchApplications();
         toast.success('Application deleted successfully');
       } catch (error) {
         toast.error('Failed to delete application');
